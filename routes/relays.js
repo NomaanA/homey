@@ -1,19 +1,21 @@
 var express = require('express');
 var router = express.Router();
+var rpio = require('rpio');
 
-function run_cmd (cmd, args, callBack) {
-  var spawn = require('child_process').spawn;
-  var child = spawn(cmd, args);
-  var resp = '';
+router.get('/4/on', function(req, res, next) {
 
-  child.stdout.on('data', function (buffer) { resp += buffer.toString(); });
-  child.stdout.on('end', function () { callBack(resp); });
-}
+    rpio.open(11, rpio.OUTPUT, rpio.HIGH);
+    rpio.write(11, rpio.LOW);
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-  run_cmd('python', ['script2.py'], function (text) { console.log(text); });
-  res.send('hello');
+    res.send('hello');
+});
+
+router.get('/4/off', function(req, res, next) {
+
+    rpio.open(11, rpio.OUTPUT, rpio.HIGH);
+    rpio.write(11, rpio.HIGH);
+
+    res.send('Bye');
 });
 
 module.exports = router;
