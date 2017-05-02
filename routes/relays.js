@@ -23,6 +23,7 @@ const toggle = (pin) => {
     }
 }
 
+
 router.get('/dance', (req, res) => {
     let dancing = true;
     const first = req.param('first');
@@ -44,6 +45,44 @@ router.get('/dance', (req, res) => {
     res.send(first);
 });
 
+router.get('/1/status/', function(req, res, next) {
+
+    res.send({ status: rpio.read(3) });
+});
+
+router.get('/2/status/', function(req, res, next) {
+
+    res.send({ status: rpio.read(5) });
+});
+
+router.get('/3/status/', function(req, res, next) {
+
+    res.send({ status: rpio.read(7) });
+});
+
+router.get('/4/status/', function(req, res, next) {
+
+    res.send({ status: rpio.read(11) });
+});
+
+
+
+
+
+
+
+
+router.get('/1', function(req, res, next) {
+    toggle(3, req);
+
+    res.send({ status: rpio.read(3) });
+});
+
+router.get('/2', function(req, res, next) {
+    toggle(5, req);
+
+    res.send({ status: rpio.read(5) });
+});
 
 router.get('/3', function(req, res, next) {
     toggle(7, req);
