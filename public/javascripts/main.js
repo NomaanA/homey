@@ -1,31 +1,52 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 
-    for (var j = 0; j < 4; j++) {
-        const buttHolder = document.getElementsByClassName('buttons')[0];
-        const butt = document.createElement("a");
-        butt.setAttribute('class', 'button is-large');
-        butt.setAttribute('data-id', j + 1);
-        butt.innerText = j + 1;
-        axios.get(`/relays/${j + 1}/status`)
+    const config = [{
+            text: "Relay 1"
+        }, {
+            text: "Relay 2"
+        },
+        {
+            text: "LED 1",
+            icon: "fa fa-lightbulb-o"
+        }, {
+            text: "LED 2",
+            icon: "fa fa-lightbulb-o"
+        },
+        {
+            text: "Dance"
+        }
+    ]
+    const generalCssClass = 'column box';
+    const activeCssClass = `is-success`;
+    const buttHolder = document.getElementsByClassName('columns')[0];
+
+    for (var relayNumber = 1; relayNumber < 5; relayNumber++) {
+        const columnWrapper = document.createElement("div");
+        columnWrapper.setAttribute('class', 'column');
+        const butt = document.createElement('div');
+        // butt.setAttribute('class', `${getCssClass()} ${config[relayNumber - 1].cssClass}`);
+        butt.setAttribute('data-id', relayNumber);
+
+        butt.innerText = config[relayNumber - 1].text;
+        console.log(config[relayNumber - 1].icon);
+        axios.get(`/relays/${relayNumber}/status`)
             .then(res => {
                 if (res.data.status !== 1) {
                     // it's on 
-                    butt.setAttribute('class', 'button is-large is-success');
+                    butt.setAttribute('class', 'notification is-success');
+                } else {
+                    butt.setAttribute('class', 'notification');
                 }
             })
             .catch(error => {
                 console.log(error);
             });
 
-        buttHolder.appendChild(butt);
-
-        //<a data-id="1" class="button is-large">1</a>
+        columnWrapper.appendChild(butt);
+        buttHolder.appendChild(columnWrapper);
     }
 
-
-
-
-    const buttons = document.querySelectorAll(".button")
+    const buttons = document.querySelectorAll(".column")
 
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener('click', (e) => {
@@ -34,16 +55,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
             axios.get(`/relays/${id}`)
                 .then(res => {
                     if (res.data.status !== 1) {
-                        e.target.setAttribute('class', 'button is-large is-success')
-                        console.log(e.target);
+                        console.log(e.target)
+                        e.target.setAttribute('class', 'notification is-success');
                     } else {
-                        e.target.setAttribute('class', 'button is-large')
+                        e.target.setAttribute('class', 'notification');
                     }
-                    console.log(res);
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
         });
     }
+
+    const dance = document.querySelector('#dance');
+    dance.addEventListener('click', (e) => {
+        e.target.setAttribute('class', 'notification is-success')
+
+        axios.get('relays/dance?first=7&second=11').then(res => {
+            console.log('s')
+        })
+    })
+    console.log(dance)
 });

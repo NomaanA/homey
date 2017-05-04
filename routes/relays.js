@@ -6,11 +6,18 @@ const Q = require('q');
 var rpio = require('rpio');
 var sleep = require('sleep');
 
-const map = {
-    2: 3,
-    3: 5,
-    4: 7,
-    17: 11
+// const map = {
+//     2: 3,
+//     3: 5,
+//     4: 7,
+//     17: 11
+// }
+
+const pinMap = {
+    1: 3,
+    2: 5,
+    3: 7,
+    4: 11
 }
 
 const toggle = (pin) => {
@@ -29,20 +36,24 @@ router.get('/dance', (req, res) => {
     const first = req.param('first');
     const second = req.param('second');
 
-    setTimeout(function() {
-        dancing = false;
-    }, 60000);
 
+    let iteration = 0;
+    console.log('dancing', dancing);
     while (dancing) {
+        iteration++;
         toggle(second);
         sleep.msleep(50);
         toggle(first);
         sleep.msleep(50);
         toggle(second);
         sleep.msleep(50);
-    }
+        if (iteration === 50) {
+            dancing = false;
+            console.log('dancing', dancing);
+        }
+        res.send('sss');
 
-    res.send(first);
+    }
 });
 
 router.get('/1/status/', function(req, res, next) {
